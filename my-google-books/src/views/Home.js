@@ -1,10 +1,9 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { Box, Button, Card, CardBody, CardFooter, CardHeader, Image, Text, TextInput, ResponsiveContext, Tabs, Tab } from 'grommet'
+import React, { useEffect, useState } from 'react';
+import { Box, Button, Text, TextInput, Tabs, Tab } from 'grommet'
 import { useLocation } from 'react-router';
-import { FormSearch, Star } from 'grommet-icons';
+import { FormSearch } from 'grommet-icons';
 import axios from 'axios'
 import queryString from 'query-string'
-import { useDispatch } from 'react-redux';
 import _ from 'lodash'
 import BookCard from '../components/BookCard';
 import FavoriteBooks from '../components/FavoriteBooks';
@@ -57,7 +56,7 @@ export default function Home() {
             setTotalBooks(resp?.data.totalItems)
             setBooks(resp?.data?.items)
         }).catch(err => {
-            console.log('error google books: ', err)
+            console.log('error')
         })
     }
 
@@ -75,82 +74,46 @@ export default function Home() {
     
     return(
         <Box pad='medium' fill overflow='hidden' full='vertical'>
-            <Box>
-                Olar, Fulanito! Seje welcome à My Google Books!
+            <Box direction='row'>
+                <Box height='40px' width='40px' background={`url(${process.env.PUBLIC_URL}/book-icon.png)`} style={{ marginRight: '0.5rem' }} />
+                <Text style={{ marginTop: '0.5rem' }}>Meu Google Books</Text>
             </Box>
             <Box>
-                <Tabs style={{ marginLeft: '0px', border: 'small' }}>
-                    <Tab title="Pesquisar Por livros">
+                <Tabs style={{ marginLeft: '0px' }} align='start' style={{ marginTop: '2%' }}>
+                    <Tab title="Pesquisar por livros">
+                        <Box style={{ marginLeft: '8%' }} fill> 
+                            <Box direction='row' alignContent='start' style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+                                <TextInput placeholder='Ex.: Senhor dos Aneis, Tolkien, Gandalf...' value={text} onChange={event => setText(event.target.value)} size='medium' style={{ marginTop: '10px', width: '30rem'}} />
+                                <Button icon={<FormSearch size='40px' />} onClick={() => searchBooks(0)} style={{ marginTop: '4px' }} />
+                            </Box>
 
-                        <Box direction='row' alignContent='start' margin='small' justify='start' style={{ width: '30%' }}>
-                            <TextInput placeholder='Ex.: Senhor dos Aneis, Tolkien, Gandalf...' value={text} onChange={event => setText(event.target.value)} size='medium' style={{ width: '99%' }} />
-                            <Button icon={<FormSearch size='40px' />} onClick={() => searchBooks(0)} />
-                        </Box>
-
-                    {
-                        _.isEmpty(books) ?
-                        <Box alignContent='center' justify='center' align='center'>
-                            <Text size='xlarge'> A sua biblioteca está vazia :( </Text>
-                        </Box> :
-                        <Box gap='medium'>
-                            {
-                                books.map(book => {
-                                    return <BookCard book={book} token={token} />
-                                })
-
-                                
-                            }
-                        
-                        <Box direction='row'>
                             {
                                 !_.isEmpty(books) &&
-                                pageNumbers.map(paginationNumber => {
-                                    const { number, startIndex } = paginationNumber
-                                    return <Button style={{ marginRight:'1rem' }} onClick={() => searchBooks(startIndex)}>{number}</Button>
-                                })
+                                <Box gap='medium'>
+                                    {
+                                        books.map(book => {
+                                            return <BookCard book={book} token={token} />
+                                        })
+                                    }
+                                </Box>
                             }
-
+                            
+                            <Box direction='row' style={{ marginTop: '1rem' }}>
+                                {
+                                    !_.isEmpty(books) &&
+                                    pageNumbers.map(paginationNumber => {
+                                        const { number, startIndex } = paginationNumber
+                                        return <Button style={{ marginRight:'1rem' }} onClick={() => searchBooks(startIndex)}>{number}</Button>
+                                    })
+                                }
+                            </Box>
                         </Box>
-
-                        {
-
-                        }
-                        </Box>
-                    }
                     </Tab>
                     <Tab title="Ver Meus Favoritos">
-                        {/* <Box pad="medium">Ver Meus Favoritos</Box> */}
                         <FavoriteBooks token={token} />
                     </Tab>
                 </Tabs>
             </Box>
-            {/* <Text style={{ marginLeft: '10px' }}> Pesquisar Livros: </Text>
-            <Box direction='row' alignContent='start' margin='small' justify='start' pad='none' style={{ width: '70%', marginRight: 0 }}>
-                <TextInput placeholder='Ex.: Senhor dos Aneis, Tolkien, Gandalf...' value={text} onChange={event => setText(event.target.value)} size='medium' style={{ width: '99%' }} />
-                <Button icon={<FormSearch size='40px' />} onClick={() => searchBooks()} />
-            </Box>
-
-            {
-                _.isEmpty(books) ?
-                <Box fill alignContent='center' justify='center' align='center' overflow='hidden'>
-                    <Text size='xlarge'> A sua biblioteca está vazia :( </Text>
-                </Box> :
-                <Box gap='large' width='35%'>
-                    {
-                        books.map(book => {
-                            return <BookCard book={book} token={token} />
-                        })
-                    }
-
-                <Box gap='small' direction='row' width='65%'>
-                    <Button><u>Primeira</u></Button>
-                    <Button><u>Anterior</u></Button>
-                    <TextInput value={1} disabled textAlign='center' />
-                    <Button><u>Próxima</u></Button>
-                    <Button><u>Última</u></Button>
-                </Box>
-                </Box>
-            } */}
         </Box>
     )
     

@@ -2,50 +2,47 @@ import axios from 'axios'
 import { Box, Button, Card, CardBody, CardFooter, CardHeader, Image, Layer, Text } from 'grommet'
 import { Star } from 'grommet-icons'
 import React, { useEffect, useState } from 'react'
-import BookDetailsLayer from './BookDetailsLayer'
 
 export default function BookCard(props) {
     const token = props?.token
     const book = props?.book
+    const favoriteBooks = props?.favoriteBooks
     const [bookDetailsLayerVisible, setBookDetailsLayerVisible] = useState(false)
+    const [bookFavoriteColor, setBookFavoriteColor] = useState('#e0e0eb')
 
-    // useEffect(() => {
-    //     console.log('olar mundo: ')
-    // }, [bookDetailsLayerVisible])
+    useEffect(() => {
+        if (favoriteBooks) setBookFavoriteColor('#ffcc00')
+
+    }, [favoriteBooks])
 
     async function addBookToFavorite(volumeID) {
         axios({
-            method: 'get',
+            method: 'post',
             url: `https://www.googleapis.com/books/v1/mylibrary/bookshelves/0/addVolume?volumeId=${volumeID}`,
             headers: {
                 Authorization: `Bearer ${token}` 
             }
         })
         .then(resp => {
-            console.log('adding favorites: ', resp)
-            // setBooks(resp?.data?.items)
+            setBookFavoriteColor('#ffcc00')
         }).catch(err => {
             console.log('error google books: ', err)
         })
     }
 
-    function showBookDetails() {
-        setBookDetailsLayerVisible(true)
-        return <BookDetailsLayer />
-    }
-
-
     const { volumeInfo, searchInfo, id } = book
     const { title, authors, publishedDate, imageLinks } = volumeInfo
 
+    const regex = /(<([^>]+)>)/ig
+
     return(
         <Card background="light-1" width='medium'>
-            <CardHeader pad="medium" direction='row' alignContent='start'>
+            <CardHeader pad="large" direction='row' alignContent='start'>
                 <Image src={imageLinks?.smallThumbnail} />
                 <Box direction='column' width='large'>
                     <Text>Título: {title}</Text>
                 </Box>
-                <Button icon={<Star color='#e0e0eb' size='40px'/>} style={{ marginBottom: '160px' }} onClick={() => addBookToFavorite(id)} />
+                <Button icon={<Star color={bookFavoriteColor} size='40px'/>} style={{ marginBottom: '160px' }} onClick={() => favoriteBooks ? undefined : addBookToFavorite(id)} />
             </CardHeader>
             <CardFooter pad={{horizontal: "small"}} background="light-2" height='4rem' justify='center'>   
                 <Button hoverIndicator onClick={() => setBookDetailsLayerVisible(true)}> Ver Mais Detalhes </Button>
@@ -64,13 +61,13 @@ export default function BookCard(props) {
                                             <Text>Autor: {authors}</Text>
                                             <Text>Ano: {publishedDate}</Text>
                                         </Box>
-                                        <Button icon={<Star color='#e0e0eb' size='40px'/>} style={{ marginBottom: '160px' }} onClick={() => addBookToFavorite(id)} />
+                                        <Button icon={<Star color={bookFavoriteColor} size='40px'/>} style={{ marginBottom: '160px' }} onClick={() => favoriteBooks ? undefined : addBookToFavorite(id)} />
                                     </CardHeader>
                                     <CardBody pad="medium" >
-                                        <Text>Texto Encontrado:<br /> {searchInfo?.textSnippet}</Text>
+                                        {searchInfo?.textSnippet.replace(regex, '').replace(/&nbsp;/g, '')}
                                     </CardBody>
                                     <CardFooter pad={{horizontal: "small"}} background="light-2" height='4rem' justify='center'>   
-                                        <Button hoverIndicator onClick={() => window.location.href = `https://books.google.com.br/books?id=${id}`}> Ler Livro No Google Books </Button>
+                                        <Button style={{ marginRight: '12rem' }} hoverIndicator onClick={() => window.location.href = `https://books.google.com.br/books?id=${id}`}> Ler Livro No Google Books </Button>
                                         <Button hoverIndicator onClick={() => setBookDetailsLayerVisible(false)}> Fechar </Button>
                                     </CardFooter>
                                 </Card>
