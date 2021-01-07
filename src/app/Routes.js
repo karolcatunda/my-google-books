@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
-
+import React from 'react';
 import Login from '../views/Login';
 import { Route, Switch } from 'react-router-dom';
 import Home from '../views/Home';
 import FavoriteBooks from '../components/FavoriteBooks';
 
-/* React Routes */
 export const HOME_PATH = '/home';
 export const FAVORITES_BOOKS_PATH = '/favorites';
 
+/**
+ * Routes creates the routes to be used by My Google Books app
+ */
 export default function Routes() {
     return (
       <Switch>
@@ -20,7 +21,6 @@ export default function Routes() {
 }
 
 function PrivateRoute({ component, ...rest }) {
-
   return (
     <Route {...rest} render={() => component} />
   );

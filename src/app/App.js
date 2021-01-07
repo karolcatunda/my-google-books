@@ -6,12 +6,12 @@ import './App.scss'
 
 function App() {
   return (
-    <Grommet theme={'#1a8cff'}>
+    <Grommet>
       <Router>
         <Routes />
       </Router>
     </Grommet >
   );
-}
+};
 
 export default App;

@@ -1,0 +1,63 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Login /> Smoke Compara o componente com o snapshot 1`] = `
+<Box
+  align="center"
+  background="url(undefined/my-books-background-1.jpg)"
+  pad="large"
+  style={
+    Object {
+      "minHeight": "98vh",
+    }
+  }
+>
+  <Box
+    background="white"
+    className="box-login"
+    pad="large"
+    round="small"
+    style={
+      Object {
+        "minHeight": "20%",
+      }
+    }
+    width="30%"
+  >
+    <Box
+      direction="row"
+    >
+      <Box
+        background="url(undefined/book-icon.png)"
+        height="30px"
+        style={
+          Object {
+            "marginRight": "0.5rem",
+            "marginTop": "1.6rem",
+          }
+        }
+        width="30px"
+      />
+      <Heading
+        level="3"
+        responsive={true}
+      >
+        Logar no Meu Google Books
+      </Heading>
+    </Box>
+    <Form
+      onSubmit={[Function]}
+    >
+      <Button
+        color="white"
+        type="submit"
+      >
+        <Box
+          background="url(undefined/btn_google_signin_light_normal_web.png)"
+          height="46px"
+          width="191px"
+        />
+      </Button>
+    </Form>
+  </Box>
+</Box>
+`;

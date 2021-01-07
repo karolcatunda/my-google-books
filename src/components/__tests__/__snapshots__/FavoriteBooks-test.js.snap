@@ -5,7 +5,7 @@ exports[`<FavoriteBooks /> Smoke Compara o componente com o snapshot 1`] = `
   fill={true}
   style={
     Object {
-      "marginLeft": "10%",
+      "marginLeft": "4%",
       "marginTop": "3rem",
     }
   }
