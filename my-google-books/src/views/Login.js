@@ -15,7 +15,7 @@ export default function Login() {
 
   return (
     <Box align='center' pad='large' style={{ minHeight: '98vh' }} background={`url(${process.env.PUBLIC_URL}/my-books-background-1.jpg)`}>
-      <Box pad='large' round='small' background='white' style={{ minHeight: '200px' }} width='30%' >
+      <Box className='box-login' pad='large' round='small' background='white' style={{ minHeight: '20%' }} width='30%' >
         <Box direction='row'>
           <Box height='30px' width='30px' background={`url(${process.env.PUBLIC_URL}/book-icon.png)`} style={{ marginTop: '1.6rem', marginRight:'0.5rem' }} />
           <Heading level='3'>Logar no Meu Google Books</Heading>

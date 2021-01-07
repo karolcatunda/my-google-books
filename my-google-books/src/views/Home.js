@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Text, TextInput, Tabs, Tab } from 'grommet'
+import { Box, Button, Text, TextInput, Tabs, Tab, Grid, Nav, Sidebar } from 'grommet'
 import { useLocation } from 'react-router';
-import { FormSearch } from 'grommet-icons';
+import { Bookmark, FormSearch, Search } from 'grommet-icons';
 import axios from 'axios'
 import queryString from 'query-string'
 import _ from 'lodash'
@@ -15,6 +15,8 @@ export default function Home() {
     const [requestSearch, setRequestSearch] = useState(false)
     const [books, setBooks] = useState([])
     const location = useLocation()
+    const [showSearch, setShowSearch] = useState(true)
+    const [showFavorites, setShowFavorites] = useState(false)
 
     const codeID = queryString.parse(location.search)?.code
     const clientID = '855994734142-cdenn2tt65qi4qc6v6u5pih33dcn5ru2.apps.googleusercontent.com'
@@ -35,29 +37,29 @@ export default function Home() {
                 'content-type': 'application/x-www-form-urlencoded'
             }
         })
-        .then(response => {
-            console.log('response.data: ', response.data)
-            setToken(response.data.access_token)
-        }).catch(e => {
-            
-        })
+            .then(response => {
+                console.log('response.data: ', response.data)
+                setToken(response.data.access_token)
+            }).catch(e => {
+
+            })
     }, [requestSearch])
 
     async function searchBooks(index) {
         if (_.isEmpty(token)) setRequestSearch(true)
         axios({
             method: 'get',
-            url: `https://www.googleapis.com/books/v1/volumes?q=${text}&startIndex=${index}&maxResults=20`,
+            url: `https://www.googleapis.com/books/v1/volumes?q=${text}&startIndex=${index}&maxResults=30`,
             headers: {
-                Authorization: `Bearer ${token}` 
+                Authorization: `Bearer ${token}`
             }
         })
-        .then(resp => {
-            setTotalBooks(resp?.data.totalItems)
-            setBooks(resp?.data?.items)
-        }).catch(err => {
-            console.log('error')
-        })
+            .then(resp => {
+                setTotalBooks(resp?.data.totalItems)
+                setBooks(resp?.data?.items)
+            }).catch(err => {
+                console.log('error')
+            })
     }
 
     const pageNumbers = [];
@@ -71,50 +73,79 @@ export default function Home() {
         }
         pageNumbers.push(pagination);
     }
-    
-    return(
-        <Box pad='medium' fill overflow='hidden' full='vertical'>
-            <Box direction='row'>
-                <Box height='40px' width='40px' background={`url(${process.env.PUBLIC_URL}/book-icon.png)`} style={{ marginRight: '0.5rem' }} />
-                <Text style={{ marginTop: '0.5rem' }}>Meu Google Books</Text>
-            </Box>
-            <Box>
-                <Tabs style={{ marginLeft: '0px' }} align='start' style={{ marginTop: '2%' }}>
-                    <Tab title="Pesquisar por livros">
-                        <Box style={{ marginLeft: '8%' }} fill> 
-                            <Box direction='row' alignContent='start' style={{ marginTop: '2rem', marginBottom: '2rem' }}>
-                                <TextInput placeholder='Ex.: Senhor dos Aneis, Tolkien, Gandalf...' value={text} onChange={event => setText(event.target.value)} size='medium' style={{ marginTop: '10px', width: '30rem'}} />
-                                <Button icon={<FormSearch size='40px' />} onClick={() => searchBooks(0)} style={{ marginTop: '4px' }} />
-                            </Box>
 
-                            {
-                                !_.isEmpty(books) &&
-                                <Box gap='medium'>
-                                    {
-                                        books.map(book => {
-                                            return <BookCard book={book} token={token} />
-                                        })
-                                    }
-                                </Box>
-                            }
-                            
-                            <Box direction='row' style={{ marginTop: '1rem' }}>
+    function showSearchBookLayer() {
+        setShowSearch(true)
+        setShowFavorites(false)
+    }
+
+    function showFavoriteLayer() {
+        setShowSearch(false)
+        setShowFavorites(true)
+    }
+
+    return (
+        <Grid
+            rows={['70px', 'auto']}
+            columns={['min-content', 'auto']}
+            style={{ minHeight: '100vh' }}
+            areas={[
+                { name: 'header', start: [0, 0], end: [1, 1] },
+                { name: 'sidebar', start: [0, 1], end: [0, 1] },
+                { name: 'main', start: [1, 1], end: [1, 1] },
+            ]}
+        >
+
+            <Box gridArea="header" background="brand" direction='row' justify='center' align='center'>
+                <Box height='40px' width='40px' background={`url(${process.env.PUBLIC_URL}/book-icon.png)`} style={{ marginRight: '0.5rem' }} />
+                <Text>Meu Google Books</Text>
+            </Box>
+            <Box gridArea="sidebar" background="white" size='small'>
+                <Sidebar round='small'>
+                    <Nav gap='medium' width='15rem'>
+                        <Box direction='row' style={{ padding: '7px' }}><Button onClick={() => showSearchBookLayer()}><Search color='blue' /><Text size={'medium'} style={{ whiteSpace: 'nowrap' }} margin={{ left: 'small', right: 'small' }} weight={'normal'}>Pesquisar Livros</Text></Button></Box>
+                        <Box direction='row' style={{ padding: '7px' }}><Button onClick={() => showFavoriteLayer()}><Bookmark color='yellow' /><Text size={'medium'} style={{ whiteSpace: 'nowrap' }} margin={{ left: 'small', right: 'small' }} weight={'normal'}>Meus Livros Favoritos</Text></Button></Box>
+                    </Nav>
+                </Sidebar>
+            </Box>
+            <Box gridArea="main" background="light-2">
+                {
+                    showSearch &&
+                    <Box>
+                        <Box direction='row' width='large' pad='medium'>
+                            <TextInput style={{ marginTop: '0.4rem', marginLeft: '0.5rem' }} size='medium' placeholder='Ex.: Senhor dos Aneis, Tolkien, Gandalf...' value={text} onChange={event => setText(event.target.value)} />
+                            <Button icon={<FormSearch size='40px' />} onClick={() => searchBooks(0)} />
+                        </Box>
+
+                        {
+                            !_.isEmpty(books) &&
+                            <Box gap='medium' style={{ marginLeft: '4rem' }}>
                                 {
-                                    !_.isEmpty(books) &&
-                                    pageNumbers.map(paginationNumber => {
-                                        const { number, startIndex } = paginationNumber
-                                        return <Button style={{ marginRight:'1rem' }} onClick={() => searchBooks(startIndex)}>{number}</Button>
+                                    books.map(book => {
+                                        return <BookCard book={book} token={token} />
                                     })
                                 }
                             </Box>
+                        }
+
+                        <Box direction='row' style={{ marginTop: '2rem', marginLeft: '1rem' }}>
+                            {
+                                !_.isEmpty(books) &&
+                                pageNumbers.map(paginationNumber => {
+                                    const { number, startIndex } = paginationNumber
+                                    return <Button style={{ marginRight: '1rem' }} onClick={() => searchBooks(startIndex)}>{number}</Button>
+                                })
+                            }
                         </Box>
-                    </Tab>
-                    <Tab title="Ver Meus Favoritos">
-                        <FavoriteBooks token={token} />
-                    </Tab>
-                </Tabs>
+
+                    </Box>
+                }
+
+                {
+                    showFavorites &&
+                    <FavoriteBooks token={token} />
+                }
             </Box>
-        </Box>
+        </Grid>
     )
-    
 }

@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<FavoriteBooks /> Smoke Compara o componente com o snapshot 1`] = `
+<Box
+  fill={true}
+  style={
+    Object {
+      "marginLeft": "10%",
+      "marginTop": "3rem",
+    }
+  }
+>
+  <Text
+    level={1}
+  >
+    Você ainda não tem livros favoritos :( 
+  </Text>
+</Box>
+`;

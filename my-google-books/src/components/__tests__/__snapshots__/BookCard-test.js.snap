@@ -1,0 +1,60 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<BookCard /> Smoke Compara o componente com o snapshot 1`] = `
+<Card
+  background="light-1"
+  width="medium"
+>
+  <CardHeader
+    alignContent="start"
+    direction="row"
+    pad="large"
+  >
+    <Image
+      src="http://books.google.com/books/content?id=W3jQCgAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api"
+    />
+    <Box
+      direction="column"
+      width="large"
+    >
+      <Text
+        level={1}
+      >
+        Título: 
+        Star Wars e a Filosofia
+      </Text>
+    </Box>
+    <Button
+      icon={
+        <Star
+          color="#e0e0eb"
+          size="40px"
+        />
+      }
+      onClick={[Function]}
+      style={
+        Object {
+          "marginBottom": "160px",
+        }
+      }
+    />
+  </CardHeader>
+  <CardFooter
+    background="light-2"
+    height="4rem"
+    justify="center"
+    pad={
+      Object {
+        "horizontal": "small",
+      }
+    }
+  >
+    <Button
+      hoverIndicator={true}
+      onClick={[Function]}
+    >
+       Ver Mais Detalhes 
+    </Button>
+  </CardFooter>
+</Card>
+`;
